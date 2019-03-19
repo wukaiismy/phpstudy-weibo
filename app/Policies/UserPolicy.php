@@ -21,7 +21,15 @@ class UserPolicy
     /**
      * 授权策略
      */
-    public function update(User $currentUser,User $user){
-        return $currentUser->id===$user->id;
+    public function update(User $currentUser, User $user)
+    {
+        return $currentUser->id === $user->id;
+    }
+    /**
+     * 管理员删除权限功能
+     */
+    public function destroy(User $currentUser, User $user)
+    {
+        return $currentUser->is_admin && $currentUser->id !== $user->id;
     }
 }
