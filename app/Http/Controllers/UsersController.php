@@ -35,36 +35,47 @@ class UsersController extends Controller
         return redirect()->route('users.show', [$user]);
     }
     // 编辑用户操作
-    public function edit(User $user ){
+    public function edit(User $user)
+    {
         $this->authorize('update', $user);
-      return view('users.edit',compact('user'));
+        return view('users.edit', compact('user'));
     }
     // 编辑用户提交处理函数
-    public function update(User $user,Request $request){
+    public function update(User $user, Request $request)
+    {
         $this->authorize('update', $user);
-      $this->validate($request,[
-          'name'=>'required|max:50',
-          'password'=>'nullable|confirmed|min:6'
-      ]);
-      $data=[];
-      $data['name']=$request->name;
-      if($request->password){
-          $data['password']=bcrypt($request->password);
-      }
-      $user->update($data);
-      session()->flash('success','更新个人资料成功！');
-      return redirect()->route('users.show',[$user]);
+        $this->validate($request, [
+            'name' => 'required|max:50',
+            'password' => 'nullable|confirmed|min:6'
+        ]);
+
+        $data = [];
+        $data['name'] = $request->name;
+        if ($request->password) {
+            $data['password'] = bcrypt($request->password);
+        }
+        $user->update($data);
+        session()->flash('success', '更新个人资料成功！');
+        return redirect()->route('users.show', [$user]);
     }
 
 
     // 权限过滤
     public function __construct()
     {
-        $this->middleware('auth',[
-            'except'=>['show','create','store']
+        $this->middleware('auth', [
+            'except' => ['show', 'create', 'store', 'index']
         ]);
-        $this->middleware('guest',[
-            'only'=>['create']
+        $this->middleware('guest', [
+            'only' => ['create']
         ]);
+    }
+    /**
+     * 获取用户列表相关数据
+     */
+    public function index()
+    {
+        $users = User::paginate(10);
+        return view('users.index', compact('users'));
     }
 }
