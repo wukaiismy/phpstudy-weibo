@@ -8,7 +8,7 @@
         <h5>注册</h5>
       </div>
       <div class="card-body">
-
+        {{-- 显示错误信息提示 --}}
         @include('shared._errors')
 
         <form method="POST" action="{{ route('users.store') }}">
