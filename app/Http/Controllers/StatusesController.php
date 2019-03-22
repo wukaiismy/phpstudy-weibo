@@ -15,7 +15,9 @@ class StatusesController extends Controller
     {
         $this->middleware('auth');
     }
-
+    /**
+    * 发布微博控制器
+    */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -26,6 +28,17 @@ class StatusesController extends Controller
             'content' => $request['content']
         ]);
         session()->flash('success', '发布成功！');
+        return redirect()->back();
+    }
+    /**
+     * 删除微博控制器
+     */
+
+    public function destroy(Status $status)
+    {
+        $this->authorize('destroy', $status);
+        $status->delete();
+        session()->flash('success', '微博已被成功删除！');
         return redirect()->back();
     }
 }
