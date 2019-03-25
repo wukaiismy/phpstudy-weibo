@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword;
+use Auth;
 
 class User extends Authenticatable
 {
@@ -78,8 +79,9 @@ class User extends Authenticatable
      */
     public function feed()
     {
-        return $this->statuses()
-            ->orderBy('created_at', 'desc');
+        $user_ids = $this->followings->pluck('id')->toArray();
+        array_push($user_ids, $this->id);
+        return Status::whereIn('user_id', $user_ids)->with('user')->orderBy('created_at', 'desc');
     }
     /**
      * 粉丝数据关联表
